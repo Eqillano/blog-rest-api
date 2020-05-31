@@ -35,11 +35,16 @@ from .serializers import (
     PostListSerializer
     )
 
+from comments.api.serializers import CommentSerializer
+from comments.models import Comment
+
+
 
 class PostCreateAPIView(CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreateUpdateSerializer
     permission_classes = [IsAuthenticated]
+    #comments = SerializerMethodField()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
