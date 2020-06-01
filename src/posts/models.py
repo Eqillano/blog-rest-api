@@ -34,7 +34,7 @@ def upload_location(instance, filename):
     new_id = PostModel.objects.order_by("id").last().id + 1
     """
     instance.__class__ gets the model Post. We must use this method because the model is defined below.
-    Then create a queryset ordered by the "id"s of each object, 
+    Then create a queryset ordered by the "id"s of each object,
     Then we get the last object in the queryset with `.last()`
     Which will give us the most recently created Model instance
     We add 1 to it, so we get what should be the same id as the the post we are creating.
@@ -45,10 +45,10 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to=upload_location, 
-            null=True, 
-            blank=True, 
-            width_field="width_field", 
+    image = models.ImageField(upload_to=upload_location,
+            null=True,
+            blank=True,
+            width_field="width_field",
             height_field="height_field")
     height_field = models.IntegerField(default=0)
     width_field = models.IntegerField(default=0)
@@ -69,6 +69,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"slug": self.slug})
+
+    def get_api_url(self):
+        return reverse('posts-api:detail',kwargs={"slug":self.slug})
 
     class Meta:
         ordering = ["-timestamp", "-updated"]
@@ -114,13 +117,3 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_post_receiver, sender=Post)
-
-
-
-
-
-
-
-
-
-

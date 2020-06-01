@@ -34,6 +34,7 @@ from posts.api.pagination import PostLimitOffsetPagination,PostPagePagination
 from posts.api.permissions import IsOwnerOrReadOnly
 
 from .serializers import (
+    CommentListSerializer,
     CommentSerializer,
     CommentDetailSerializer,
     CommentChildSerializer,
@@ -74,14 +75,14 @@ class CommentDetailAPIView(DestroyModelMixin,UpdateModelMixin,RetrieveAPIView):
 
 
 class CommentListAPIView(ListAPIView):
-    serializer_class = CommentSerializer
+    serializer_class = CommentListSerializer
     filter_backends= [SearchFilter, OrderingFilter]
     search_fields = ['content', 'user__first_name']
     pagenation_class = PostPagePagination
 
     def get_queryset(self, *args, **kwargs):
         #queryset_list = super(PostListAPIView, self).get_queryset(*args, **kwargs)
-        queryset_list = Comment.objects.all()
+        queryset_list = Comment.objects.filter(id_gte=0)
         query = self.request.GET.get("q")
         if query:
             queryset_list = queryset_list.filter(
